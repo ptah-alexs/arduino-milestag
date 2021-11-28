@@ -4,7 +4,7 @@
 #include "U8glib.h"
 U8GLIB_SSD1306_128X64 display(10, 9, 5);
 
-static const unsigned char PROGMEM heart1[] ={
+static const uint8_t PROGMEM heart1[] ={
 B00100100,
 B01111110,
 B11111111,
@@ -13,7 +13,7 @@ B00111100,
 B00011000
 };
 
-static const unsigned char PROGMEM shield1[] ={
+static const uint8_t PROGMEM shield1[] ={
 B11111111,
 B11111111,
 B11111111,
@@ -70,43 +70,43 @@ const char* const states[] PROGMEM = {
 st_0,st_1,st_2
 };
 
-const byte val_damage[16] PROGMEM = {1, 2, 4, 5, 7, 10, 15, 17, 20, 25, 30, 35, 40, 50, 75, 100};
-const int val_hit_timeout[24] PROGMEM = {0, 5, 10, 15, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400};
-const int val_rpm[12] PROGMEM = {250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800};
-const int val_health[72] PROGMEM = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, \
+const uint8_t val_damage[16] PROGMEM = {1, 2, 4, 5, 7, 10, 15, 17, 20, 25, 30, 35, 40, 50, 75, 100};
+const int16_t val_hit_timeout[24] PROGMEM = {0, 5, 10, 15, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400};
+const int16_t val_rpm[12] PROGMEM = {250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800};
+const int16_t val_health[72] PROGMEM = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, \
                                     80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195,\
                                     200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 999};
 
 //global states
-boolean tg_started        = true;
-boolean tg_paused         = false;
-boolean tg_is_overheat    = false;
-boolean tg_is_inf_ammo    = false;
+bool tg_started        = true;
+bool tg_paused         = false;
+bool tg_is_overheat    = false;
+bool tg_is_inf_ammo    = false;
 
 //timers
-unsigned long start_timer = 0;
-unsigned long fire_timer  = 0;
-unsigned long gl_interval = 0;
-unsigned long timer       = 0;
+uint32_t start_timer = 0;
+uint32_t fire_timer  = 0;
+uint32_t gl_interval = 0;
+uint32_t timer       = 0;
 
-const byte MAX_COUNT      = 39;
-const int lnk_lvl_0       = 600;
-const int lnk_lvl_1       = lnk_lvl_0<<1;
-const byte lnk_ir_freq    = 36;
-const int lnk_timeout     = 3200;
-const byte lnk_ir_speriod = (int) ((500/lnk_ir_freq) - 4);
-const byte lnk_ir_pulses  = (int) (lnk_lvl_0 / (1000/lnk_ir_freq));
+const uint8_t MAX_COUNT      = 39;
+const int16_t lnk_lvl_0       = 600;
+const int16_t lnk_lvl_1       = lnk_lvl_0<<1;
+const uint8_t lnk_ir_freq    = 36;
+const int16_t lnk_timeout     = 3200;
+const uint8_t lnk_ir_speriod = (int) ((500/lnk_ir_freq) - 4);
+const uint8_t lnk_ir_pulses  = (int) (lnk_lvl_0 / (1000/lnk_ir_freq));
 
 // list of pin
-int ctrl_ir_transmit      = 2;
-int sens_head             = 3;
-int ctrl_fire             = 4;
-int ctrl_fire_selector1   = 7;
-int ctrl_fire_selector2   = 8;
-int ind_hit               = 14;
-int ind_muz_flash         = 15;
-//int ind_busy              = 16;
-int ctrl_reload           = 17;
+int16_t ctrl_ir_transmit      = 2;
+int16_t sens_head             = 3;
+int16_t ctrl_fire             = 4;
+int16_t ctrl_fire_selector1   = 7;
+int16_t ctrl_fire_selector2   = 8;
+int16_t ind_hit               = 14;
+int16_t ind_muz_flash         = 15;
+//int16_t ind_busy              = 16;
+int16_t ctrl_reload           = 17;
 /*Последняя ревизия
 0  - последовательный порт. mp3-модуль
 1  - последовательный порт. mp3-модуль
@@ -203,88 +203,88 @@ U8GLIB_SSD1306_128X64 u8g(10, 9, 5);
 19 - i2c. Аналоговый вход 5
  */
 // other data
-byte data_recieved[MAX_COUNT];
-byte tg_stat_02[214];
-byte tg_stat_03[214];
-int hit_interval          = 0;
-int ctrl_fire_delay       = 0;
-int ctrl_index            = 0;
-int tg_player_data        = 0;
-int tg_max_life           = 0;
-int tg_cur_life           = 0;
-int tg_max_ammo           = 0;
-int tg_cur_ammo           = 0;
-int tg_medpack_mask       = 0;
-int tg_ammobox_mask       = 0;
-int tg_flag_mask          = 0;
-int tg_overheat_counter   = 0;
-int tg_overheat_int       = 0;
-int tg_ind_shadow         = 0;
+uint8_t data_recieved[MAX_COUNT];
+uint8_t tg_stat_02[214];
+uint8_t tg_stat_03[214];
+int16_t hit_interval          = 0;
+int16_t ctrl_fire_delay       = 0;
+int16_t ctrl_index            = 0;
+int16_t tg_player_data        = 0;
+int16_t tg_max_life           = 0;
+int16_t tg_cur_life           = 0;
+int16_t tg_max_ammo           = 0;
+int16_t tg_cur_ammo           = 0;
+int16_t tg_medpack_mask       = 0;
+int16_t tg_ammobox_mask       = 0;
+int16_t tg_flag_mask          = 0;
+int16_t tg_overheat_counter   = 0;
+int16_t tg_overheat_int       = 0;
+int16_t tg_ind_shadow         = 0;
 
-byte tg_overheat_cnt      = 0;
-byte cheat_count          = 0;
-word tg_wrk_int           = 0;
-word tg_zombie_cnt        = 0;
-byte tg_ani_cnt           = 0;
-word tg_hit_led_cnt       = 0;
-word tg_msg_cnt           = 0;
-byte msg                  = 0;
+uint8_t tg_overheat_cnt      = 0;
+uint8_t cheat_count          = 0;
+uint16_t tg_wrk_int           = 0;
+uint16_t tg_zombie_cnt        = 0;
+uint8_t tg_ani_cnt           = 0;
+uint16_t tg_hit_led_cnt       = 0;
+uint16_t tg_msg_cnt           = 0;
+uint8_t msg                  = 0;
 
-byte tg_cur_clip          = 0;
-byte tg_rd_trig           = 0;
-byte tg_snd_shot          = 0;
-byte tg_snd_reload        = 0;
+uint8_t tg_cur_clip          = 0;
+uint8_t tg_rd_trig           = 0;
+uint8_t tg_snd_shot          = 0;
+uint8_t tg_snd_reload        = 0;
 
-byte tg_flag_count        = 0;
-byte tg_respawn_count     = 0;
-byte tg_armor             = 0;
-byte tg_burst_counter     = 0;
-byte tg_tagged_out        = 0;
-byte tg_min_of_game       = 0;
-byte tg_sec_of_game       = 0;
-int  tg_shot_count        = 0;
-int  tg_hit_count         = 0;
+uint8_t tg_flag_count        = 0;
+uint8_t tg_respawn_count     = 0;
+uint8_t tg_armor             = 0;
+uint8_t tg_burst_counter     = 0;
+uint8_t tg_tagged_out        = 0;
+uint8_t tg_min_of_game       = 0;
+uint8_t tg_sec_of_game       = 0;
+int16_t  tg_shot_count        = 0;
+int16_t  tg_hit_count         = 0;
 
-byte cl_team_id           = 0;
-byte tg_player_id         = 0;
+uint8_t cl_team_id           = 0;
+uint8_t tg_player_id         = 0;
 
-byte cl_muzzle_flash      = 0;
-byte cl_overheat_on       = 0;
-byte cl_hit_led_enabled   = 0;
-byte cl_friendly_fire     = 0;
-byte cl_unlimited_clips   = 0;
-byte cl_zombie_mod        = 0;
-byte cl_medpack_enabled   = 0;
-byte cl_gamebox_reset     = 0;
-byte cl_gamemox_limit     = 0;
-byte cl_ctf_display_on    = 0;//Not implemented in hardware of tagger
-byte cl_respawn_on        = 0;
-byte cl_tagger_nick_on    = 0;//Not implemented in hardware
-byte cl_old_ir_lvl        = 0;//Not implemented in hardware
-byte cl_ammo_reset_resp   = 0;
-byte cl_game_mode_on      = 1;
-byte cl_ammo_box_clips    = 0;
-byte cl_medpack_size      = 0;
-byte cl_hit_led_timeout   = 0;
-byte cl_sound_set         = 0;
-byte cl_overheat_limit    = 0;
-byte cl_damage_id         = 0;
-byte cl_clip_size         = 0;
-byte cl_clip_numbers      = 0;
-byte cl_fire_selector     = 0;
-byte cl_burst_size        = 0;
-byte cl_rpm               = 0;
-byte cl_reload_delay      = 0;
-byte cl_ir_power          = 0;//Not implemented in hardware
-byte cl_ir_range          = 0;//Not implemented in hardware
-byte cl_health_respawn    = 0;
-byte cl_respawn_delay     = 0;
-byte cl_armor             = 0;
-byte cl_hit_delay         = 0;
-byte cl_start_delay       = 0;
-byte cl_death_delay       = 0;
-byte cl_time_limit        = 0;
-byte cl_max_respawns      = 0;
+uint8_t cl_muzzle_flash      = 0;
+uint8_t cl_overheat_on       = 0;
+uint8_t cl_hit_led_enabled   = 0;
+uint8_t cl_friendly_fire     = 0;
+uint8_t cl_unlimited_clips   = 0;
+uint8_t cl_zombie_mod        = 0;
+uint8_t cl_medpack_enabled   = 0;
+uint8_t cl_gamebox_reset     = 0;
+uint8_t cl_gamemox_limit     = 0;
+uint8_t cl_ctf_display_on    = 0;//Not implemented in hardware of tagger
+uint8_t cl_respawn_on        = 0;
+uint8_t cl_tagger_nick_on    = 0;//Not implemented in hardware
+uint8_t cl_old_ir_lvl        = 0;//Not implemented in hardware
+uint8_t cl_ammo_reset_resp   = 0;
+uint8_t cl_game_mode_on      = 1;
+uint8_t cl_ammo_box_clips    = 0;
+uint8_t cl_medpack_size      = 0;
+uint8_t cl_hit_led_timeout   = 0;
+uint8_t cl_sound_set         = 0;
+uint8_t cl_overheat_limit    = 0;
+uint8_t cl_damage_id         = 0;
+uint8_t cl_clip_size         = 0;
+uint8_t cl_clip_numbers      = 0;
+uint8_t cl_fire_selector     = 0;
+uint8_t cl_burst_size        = 0;
+uint8_t cl_rpm               = 0;
+uint8_t cl_reload_delay      = 0;
+uint8_t cl_ir_power          = 0;//Not implemented in hardware
+uint8_t cl_ir_range          = 0;//Not implemented in hardware
+uint8_t cl_health_respawn    = 0;
+uint8_t cl_respawn_delay     = 0;
+uint8_t cl_armor             = 0;
+uint8_t cl_hit_delay         = 0;
+uint8_t cl_start_delay       = 0;
+uint8_t cl_death_delay       = 0;
+uint8_t cl_time_limit        = 0;
+uint8_t cl_max_respawns      = 0;
 
 void setup(){
     Serial.begin(9600);
@@ -401,12 +401,12 @@ void set_default(){
 }
 
 void receive_command(){
-    static int recieved_pulse   = 0;
-    static byte recieved_bit    = 0;
-    static byte parity_bit      = 0;
-    static byte temp_parity_bit = 0; 
-    static byte size_of_command = 0;
-    static byte parity          = 0;
+    static int16_t recieved_pulse   = 0;
+    static uint8_t recieved_bit    = 0;
+    static uint8_t parity_bit      = 0;
+    static uint8_t temp_parity_bit = 0; 
+    static uint8_t size_of_command = 0;
+    static uint8_t parity          = 0;
     recieved_pulse = pulseIn(sens_head, LOW,lnk_timeout);
     if (recieved_pulse > 1800) {
         ctrl_index  = 0;
@@ -436,20 +436,20 @@ void receive_command(){
             ctrl_index++;
         }
         if (ctrl_index > 15){
-            for (int j = 0;j < size_of_command; j++){
-                for (int i=0;i < 8; i++){
+            for (int16_t j = 0;j < size_of_command; j++){
+                for (int16_t i=0;i < 8; i++){
                     if ((data_recieved[j]>>i)&B1 == 1){parity++;}
                 }
             }
             //digitalWrite(ind_busy,LOW);
             if (cl_game_mode_on == 0){parity = (size_of_command << 3) - parity;}
             if ((parity%2)==temp_parity_bit){parse_protocol();}
-            for (int i = 0; i < (ctrl_index >>3)+1; i++){data_recieved[i]=0;}
+            for (int16_t i = 0; i < (ctrl_index >>3)+1; i++){data_recieved[i]=0;}
         }
     }
 }
 
-void show_message(byte msg1,word duration){
+void show_message(uint8_t msg1, uint16_t duration){
     if (duration != 0xFFFF){
         tg_msg_cnt = duration * 20;
     } else {tg_msg_cnt = 0xFFFF;};
@@ -468,10 +468,10 @@ void reload(){
 }
 
 void triggers(){
-    static byte trig_fire_state = 0;
-    static byte trig_fire_state_old = 0;
-    static byte trig_reload_state = 0;
-    static byte trig_reload_state_old = 0;
+    static uint8_t trig_fire_state = 0;
+    static uint8_t trig_fire_state_old = 0;
+    static uint8_t trig_reload_state = 0;
+    static uint8_t trig_reload_state_old = 0;
     trig_fire_state_old = trig_fire_state;
     trig_fire_state = digitalRead(ctrl_fire);
     trig_reload_state_old = trig_reload_state;
@@ -611,14 +611,14 @@ void timers(){
 }
 
 void shoot(){
-    byte parity = 0;
+    uint8_t parity = 0;
     if (tg_cur_ammo > 0){
         if (tg_rd_trig != 3 && !tg_is_overheat){
             if (cl_muzzle_flash == 1) {digitalWrite(ind_muz_flash,HIGH);}
             mp3_play(tg_snd_shot);
             sendPulse(ctrl_ir_transmit,2);
             delayMicroseconds(lnk_lvl_0);
-            for (int i = 15; i >= 0; i--){
+            for (int16_t i = 15; i >= 0; i--){
                 if (((tg_player_data >> i) & B1) == 0){sendPulse(ctrl_ir_transmit,0);}
                 else {
                     sendPulse(ctrl_ir_transmit,1);
@@ -655,8 +655,8 @@ void show_info_led(){
     show_info();
 };
 
-void sendPulse(int pin, byte length){
-  int i = 0;
+void sendPulse(int16_t pin, uint8_t length){
+    int16_t i = 0;
     while(i < lnk_ir_pulses<<length){
       i++;
       digitalWrite(pin, HIGH);
@@ -801,9 +801,9 @@ void parse_protocol(){
     }
 }
 
-void hit(byte damage, byte team, byte player){
+void hit(uint8_t damage, uint8_t team, uint8_t player){
     //hit to player. damage code - hp:
-    byte dmg = 0;
+    uint8_t dmg = 0;
     dmg = code2damage(damage);
     if (cl_friendly_fire == 0 && team == cl_team_id){}
     else {
@@ -876,18 +876,18 @@ void dead(){
     }
 }
 
-void align(int st, int x, int y){
-    byte offcet  = display.getStrWidth("9");
-    byte offcet1 = 0; 
+void align(int16_t st, int16_t x, int16_t y){
+    uint8_t offcet  = display.getStrWidth("9");
+    uint8_t offcet1 = 0; 
     if (st < 100){offcet1+=offcet;};
     if (st < 10){offcet1+=offcet;};
     display.setPrintPos(x+offcet1,y);
     display.print(st);
 }
 
-void align2(int st, int x, int y){
-    byte offcet  = display.getStrWidth("9");
-    byte offcet1 = offcet*3; 
+void align2(int16_t st, int16_t x, int16_t y){
+    uint8_t offcet  = display.getStrWidth("9");
+    uint8_t offcet1 = offcet*3; 
     if (st < 100){offcet1 = offcet*2;};
     if (st < 10){offcet1 = offcet;};
     display.setPrintPos(x+((63 - offcet1)/2),y);
@@ -900,8 +900,8 @@ void noammo(){
     show_info_led();
 }
 void draw(){
-    unsigned long tog = 0;
-    int cl = 0;
+    uint32_t tog = 0;
+    int16_t cl = 0;
     char buf[20];
     display.setColorIndex(1);
     display.setFont(u8g_font_courB08);
@@ -925,10 +925,10 @@ void draw(){
     display.print(tg_player_id);
     if (start_timer !=0){
         tog = (gl_interval + start_timer) - timer;
-        byte tom = (tog/1000)/60;
+        uint8_t tom = (tog/1000)/60;
         align(tom,92,64);
         display.print(":");
-        byte tos = (tog/1000)%60;
+        uint8_t tos = (tog/1000)%60;
         if (tos <10) {display.print(0);}
         display.print(tos);
     } else {
@@ -969,7 +969,7 @@ void show_info(){
     };
 }
 
-void add_health(byte data){
+void add_health(uint8_t data){
     //add health 0-100
     mp3_play(8);
     if (data > 100) {data = 100;}
@@ -979,7 +979,7 @@ void add_health(byte data){
     show_info_led();
 }
 
-void add_ammopack(byte data){
+void add_ammopack(uint8_t data){
     //add ammo 0-100
     mp3_play(10);
     if (data > 100) {data = 100;}
@@ -1078,7 +1078,7 @@ void end_game(){
     //end game
     mp3_play(12);
     mp3_play(9);
-    unsigned long time_of_game = 0;
+    uint32_t time_of_game = 0;
     tg_started = false;
     time_of_game = millis() - start_timer;
     start_timer = 0;
@@ -1162,7 +1162,7 @@ void ungun_player(){
     show_info_led();
 }
 
-void ammo_box(byte data){
+void ammo_box(uint8_t data){
     //Ammo box (interactive); data 0x00-0x0F box's ID (0-15)
     mp3_play(10);
     if (cl_gamemox_limit == 0){
@@ -1179,7 +1179,7 @@ void ammo_box(byte data){
     show_info_led();
 }
 
-void medpack(byte data){
+void medpack(uint8_t data){
     //Medical pack (interactive); data 0x00-0x0F medpack's ID (0-15)
     if (cl_medpack_enabled == 1){
         mp3_play(8);
@@ -1196,7 +1196,7 @@ void medpack(byte data){
     }
 }
 
-void ctf(byte data){
+void ctf(uint8_t data){
     //Capture the flag (interactive); 0x00-0x0F ID флага (0-15)
     mp3_play(20);
     if (((tg_flag_mask >> data) & B1) == 0){
@@ -1208,11 +1208,11 @@ void ctf(byte data){
 }
 
 void getclonedata(){
-    int checksum = 0;
+    int16_t checksum = 0;
     if (!tg_started){
         show_message(24,3);
         show_info_led();
-        for (int i = 3; i < MAX_COUNT - 1; i++){
+        for (int16_t i = 3; i < MAX_COUNT - 1; i++){
             checksum += data_recieved[i];
         }
         if (checksum%0x100 == data_recieved[MAX_COUNT - 1]){
@@ -1278,7 +1278,7 @@ void getclonedata(){
     }
 }
 
-void set_zombie(byte team_id){
+void set_zombie(uint8_t team_id){
     switch (team_id){
         case 0:
             tg_max_life = 200;
@@ -1307,7 +1307,7 @@ void set_zombie(byte team_id){
 }
 
 void clean_stat(){
-//    for (int i = 0; i < 214; i++){
+//    for (int16_t i = 0; i < 214; i++){
 //        tg_stat_02[i] = 0;
 //        tg_stat_03[i] = 0;
 //    }
@@ -1321,10 +1321,10 @@ void clean_stat(){
 }
 
 void send_stat(){
-    byte tg_stat_01[12];
-    int checksum1 = 0;
-    int checksum2 = 0;
-//    for (int i = 0; i < 12; i++){
+    uint8_t tg_stat_01[12];
+    int16_t checksum1 = 0;
+    int16_t checksum2 = 0;
+//    for (int16_t i = 0; i < 12; i++){
 //        tg_stat_01[i] = 0;
 //    }
     show_message(25,0xFFFF);
@@ -1342,7 +1342,7 @@ void send_stat(){
     tg_stat_01[9]  = tg_tagged_out;
     tg_stat_01[10] = tg_flag_count;
     tg_stat_01[11] = (tg_stat_01[0] + tg_stat_01[1] + tg_stat_01[2] + tg_stat_01[3] + tg_stat_01[4] + tg_stat_01[5] + tg_stat_01[6] + tg_stat_01[7] + tg_stat_01[8] + tg_stat_01[9] + tg_stat_01[10])%0x100;
-    for (int j = 0; j <= 213; j++){
+    for (int16_t j = 0; j <= 213; j++){
         checksum1 +=tg_stat_02[j];
         checksum2 +=tg_stat_03[j];
     }
@@ -1350,8 +1350,8 @@ void send_stat(){
     tg_stat_03[213] = checksum2%0x100;
     //digitalWrite(ind_busy,HIGH);
     sendcommand(0x8703);
-    for (int j = 0; j <= 12; j++){
-        for (int i = 7; i >= 0; i--){
+    for (int16_t j = 0; j <= 12; j++){
+        for (int16_t i = 7; i >= 0; i--){
             if (((tg_stat_01[j] >> i) & B1) == 0){sendPulse(ctrl_ir_transmit,0);}
             else {sendPulse(ctrl_ir_transmit,1);}
             delayMicroseconds(lnk_lvl_0);        
@@ -1359,8 +1359,8 @@ void send_stat(){
     }
     delayMicroseconds(lnk_timeout << 1);
     sendcommand(0x8704);
-    for (int j = 0; j <= 214; j++){
-        for (int i = 7; i >= 0; i--){
+    for (int16_t j = 0; j <= 214; j++){
+        for (int16_t i = 7; i >= 0; i--){
             if (((tg_stat_02[j] >> i) & B1) == 0){sendPulse(ctrl_ir_transmit,0);}
             else {sendPulse(ctrl_ir_transmit,1);}
             delayMicroseconds(lnk_lvl_0);        
@@ -1368,8 +1368,8 @@ void send_stat(){
     }
     delayMicroseconds(lnk_timeout << 1);
     sendcommand(0x8705);
-    for (int j = 0; j <= 214; j++){
-        for (int i = 7; i >= 0; i--){
+    for (int16_t j = 0; j <= 214; j++){
+        for (int16_t i = 7; i >= 0; i--){
             if (((tg_stat_03[j] >> i) & B1) == 0){sendPulse(ctrl_ir_transmit,0);}
             else {sendPulse(ctrl_ir_transmit,1);}
             delayMicroseconds(lnk_lvl_0);        
@@ -1381,11 +1381,11 @@ void send_stat(){
     show_info_led();  
 }
 
-void sendcommand(unsigned int comm){
-    byte parity = 0;
+void sendcommand(uint16_t comm){
+    uint8_t parity = 0;
     sendPulse(ctrl_ir_transmit,2);
     delayMicroseconds(lnk_lvl_0);
-    for (int i = 15; i >= 0; i--){
+    for (int16_t i = 15; i >= 0; i--){
         if (((comm >> i) & B1) == 0){sendPulse(ctrl_ir_transmit,0);}
         else {
             sendPulse(ctrl_ir_transmit,1);
@@ -1393,7 +1393,7 @@ void sendcommand(unsigned int comm){
         }
         delayMicroseconds(lnk_lvl_0);        
     }
-    for (int i = 7; i >= 0; i--){
+    for (int16_t i = 7; i >= 0; i--){
         if (((0xE8 >> i) & B1) == 0){sendPulse(ctrl_ir_transmit,0);}
         else {sendPulse(ctrl_ir_transmit,1);}
         delayMicroseconds(lnk_lvl_0);        
@@ -1405,31 +1405,31 @@ void sendcommand(unsigned int comm){
     delayMicroseconds(lnk_lvl_0); 
 }
 
-int code2health(byte health){
+int16_t code2health(uint8_t health){
     if (health < sizeof(val_health)){
         return val_health[health];}
     else return 0;
 }
 
-int code2rpm(byte rpm){
+int16_t code2rpm(uint8_t rpm){
     if (rpm < sizeof(val_rpm)){
         return val_rpm[rpm];}
     else return 0;
 }
 
-int code2damage(byte damage){
+int16_t code2damage(uint8_t damage){
     if (damage < sizeof(val_damage)){
         return val_damage[damage];}
     else return 0;
 }
 
-int code2hit_timeout(byte code){
+int16_t code2hit_timeout(uint8_t code){
     if (code < sizeof(val_hit_timeout)){
         return val_hit_timeout[code];}
     else return 0;
 }
 
-int code2ir_range(byte code){
+int16_t code2ir_range(uint8_t code){
     switch (code) {
         case 0x01:
             return 1;
