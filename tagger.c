@@ -70,6 +70,13 @@ const char* const states[] PROGMEM = {
 st_0,st_1,st_2
 };
 
+const byte val_damage[16] PROGMEM = {1, 2, 4, 5, 7, 10, 15, 17, 20, 25, 30, 35, 40, 50, 75, 100};
+const int val_hit_timeout[24] PROGMEM = {0, 5, 10, 15, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400};
+const int val_rpm[12] PROGMEM = {250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800};
+const int val_health[72] PROGMEM = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, \
+                                    80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195,\
+                                    200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 999};
+
 //global states
 boolean tg_started        = true;
 boolean tg_paused         = false;
@@ -1399,275 +1406,27 @@ void sendcommand(unsigned int comm){
 }
 
 int code2health(byte health){
-    switch (health){
-        case 0x01:
-            return 1;
-        case 0x02:
-            return 2;
-        case 0x03:
-            return 3;
-        case 0x04:
-            return 4;
-        case 0x05:
-            return 5;
-        case 0x06:
-            return 6;
-        case 0x07:
-            return 7;
-        case 0x08:
-            return 8;
-        case 0x09:
-            return 9;
-        case 0x0A:
-            return 10;
-        case 0x0B:
-            return 11;
-        case 0x0C:
-            return 12;
-        case 0x0D:
-            return 13;
-        case 0x0E:
-            return 14;
-        case 0x0F:
-            return 15;
-        case 0x10:
-            return 16;
-        case 0x11:
-            return 17;
-        case 0x12:
-            return 18;
-        case 0x13:
-            return 19;
-        case 0x14:
-            return 20;
-        case 0x15:
-            return 25;
-        case 0x16:
-            return 30;
-        case 0x17:
-            return 35;
-        case 0x18:
-            return 40;
-        case 0x19:
-            return 45;
-        case 0x1A:
-            return 50;
-        case 0x1B:
-            return 55;
-        case 0x1C:
-            return 60;
-        case 0x1D:
-            return 65;
-        case 0x1E:
-            return 70;
-        case 0x1F:
-            return 75;
-        case 0x20:
-            return 80;
-        case 0x21:
-            return 85;
-        case 0x22:
-            return 90;
-        case 0x23:
-            return 95;
-        case 0x24:
-            return 100;
-        case 0x25:
-            return 105;
-        case 0x26:
-            return 110;
-        case 0x27:
-            return 115;
-        case 0x28:
-            return 120;
-        case 0x29:
-            return 125;
-        case 0x2A:
-            return 130;
-        case 0x2B:
-            return 135;
-        case 0x2C:
-            return 140;
-        case 0x2D:
-            return 145;
-        case 0x2E:
-            return 150;
-        case 0x2F:
-            return 155;
-        case 0x30:
-            return 160;
-        case 0x31:
-            return 165;
-        case 0x32:
-            return 170;
-        case 0x33:
-            return 175;
-        case 0x34:
-            return 180;
-        case 0x35:
-            return 185;
-        case 0x36:
-            return 190;
-        case 0x37:
-            return 195;
-        case 0x38:
-            return 200;
-        case 0x39:
-            return 250;
-        case 0x3A:
-            return 300;
-        case 0x3B:
-            return 350;
-        case 0x3C:
-            return 400;
-        case 0x3D:
-            return 450;
-        case 0x3E:
-            return 500;
-        case 0x3F:
-            return 550;
-        case 0x40:
-            return 600;
-        case 0x41:
-            return 650;
-        case 0x42:
-            return 700;
-        case 0x43:
-            return 750;
-        case 0x44:
-            return 800;
-        case 0x45:
-            return 850;
-        case 0x46:
-            return 900;
-        case 0x47:
-            return 950;
-        case 0x48:
-            return 999;
-        default:
-            break;
-    } 
+    if (health < sizeof(val_health)){
+        return val_health[health];}
+    else return 0;
 }
 
 int code2rpm(byte rpm){
-    switch (rpm){
-        case 0x00:
-            return 250;
-        case 0x01:
-            return 300;
-        case 0x02:
-            return 350;
-        case 0x03:
-            return 400;
-        case 0x04:
-            return 450;
-        case 0x05:
-            return 500;
-        case 0x06:
-            return 550;
-        case 0x07:
-            return 600;
-        case 0x08:
-            return 650;
-        case 0x09:
-            return 700;
-        case 0x0A:
-            return 750;
-        case 0x0B:
-            return 800;
-    }
+    if (rpm < sizeof(val_rpm)){
+        return val_rpm[rpm];}
+    else return 0;
 }
 
 int code2damage(byte damage){
-    switch (damage) {
-        case 0:
-            return 1;
-        case 1:
-            return 2;
-        case 2:
-            return 4;
-        case 3:
-            return 5;
-        case 4:
-            return 7;
-        case 5:
-            return 10;
-        case 6:
-            return 15;
-        case 7:
-            return 17;
-        case 8:
-            return 20;
-        case 9:
-            return 25;
-        case 10:
-            return 30;
-        case 11:
-            return 35;
-        case 12:
-            return 40;
-        case 13:
-            return 50;
-        case 14:
-            return 75;
-        case 15:
-            return 100;
-        default:
-            return 0;
-    }
+    if (damage < sizeof(val_damage)){
+        return val_damage[damage];}
+    else return 0;
 }
 
 int code2hit_timeout(byte code){
-    switch (code) {
-        case 0x00:
-            return 0;
-        case 0x01:
-            return 5;
-        case 0x02:
-            return 10;
-        case 0x03:
-            return 15;
-        case 0x04:
-            return 20;
-        case 0x05:
-            return 40;
-        case 0x06:
-            return 60;
-        case 0x07:
-            return 80;
-        case 0x08:
-            return 100;
-        case 0x09:
-            return 120;
-        case 0x0A:
-            return 140;
-        case 0x0B:
-            return 160;
-        case 0x0C:
-            return 180;
-        case 0x0D:
-            return 200;
-        case 0x0E:
-            return 220;
-        case 0x0F:
-            return 240;
-        case 0x10:
-            return 260;
-        case 0x11:
-            return 280;
-        case 0x12:
-            return 300;
-        case 0x13:
-            return 320;
-        case 0x14:
-            return 340;
-        case 0x15:
-            return 360;
-        case 0x16:
-            return 380;
-        case 0x17:
-            return 400;
-    }
+    if (code < sizeof(val_hit_timeout)){
+        return val_hit_timeout[code];}
+    else return 0;
 }
 
 int code2ir_range(byte code){
