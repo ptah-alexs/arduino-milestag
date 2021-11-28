@@ -1,15 +1,15 @@
-const int lnk_lvl_0       = 600;
-const int lnk_lvl_1       = lnk_lvl_0<<1;
-const byte lnk_ir_freq    = 36;
-const int lnk_timeout     = 3200;
-const byte lnk_ir_speriod = (int) ((500/lnk_ir_freq) - 4);
-const byte lnk_ir_pulses  = (int) (lnk_lvl_0 / (1000/lnk_ir_freq));
+const int16_t lnk_lvl_0       = 600;
+const int16_t lnk_lvl_1       = lnk_lvl_0<<1;
+const uint8_t lnk_ir_freq    = 36;
+const int16_t lnk_timeout     = 3200;
+const uint8_t lnk_ir_speriod = (int) ((500/lnk_ir_freq) - 4);
+const uint8_t lnk_ir_pulses  = (int) (lnk_lvl_0 / (1000/lnk_ir_freq));
 
-byte cl_game_mode_on      = 1;
+uint8_t cl_game_mode_on      = 1;
 
 // list of pin
-int ctrl_ir_transmit      = 2;
-int ctrl_btn              = 3;
+int16_t ctrl_ir_transmit      = 2;
+int16_t ctrl_btn              = 3;
 
 void setup(){
     Serial.begin(9600); 
@@ -24,8 +24,8 @@ void loop(){
 }
 
 void triggers(){
-    static byte trig_btn_state = 0;
-    static byte trig_btn_state_old = 0;
+    static uint8_t trig_btn_state = 0;
+    static uint8_t trig_btn_state_old = 0;
     trig_btn_state_old = trig_btn_state;
     trig_btn_state = digitalRead(ctrl_btn);
     if ( trig_btn_state != trig_btn_state_old && trig_btn_state == LOW){
@@ -33,11 +33,11 @@ void triggers(){
     }
 }
 
-void sendcommand(unsigned int comm){
-    byte parity = 0;
+void sendcommand(uint16_t comm){
+    uint8_t parity = 0;
     sendPulse(ctrl_ir_transmit,2);
     delayMicroseconds(lnk_lvl_0);
-    for (int i = 15; i >= 0; i--){
+    for (int16_t i = 15; i >= 0; i--){
         if (((comm >> i) & B1) == 0){sendPulse(ctrl_ir_transmit,0);}
         else {
             sendPulse(ctrl_ir_transmit,1);
@@ -45,7 +45,7 @@ void sendcommand(unsigned int comm){
         }
         delayMicroseconds(lnk_lvl_0);        
     }
-    for (int i = 7; i >= 0; i--){
+    for (int16_t i = 7; i >= 0; i--){
         if (((0xE8 >> i) & B1) == 0){sendPulse(ctrl_ir_transmit,0);}
         else {sendPulse(ctrl_ir_transmit,1);}
         delayMicroseconds(lnk_lvl_0);        
@@ -57,8 +57,8 @@ void sendcommand(unsigned int comm){
     delayMicroseconds(lnk_lvl_0); 
 }
 
-void sendPulse(int pin, byte length){
-  int i = 0;
+void sendPulse(int16_t pin, uint8_t length){
+  int16_t i = 0;
     while(i < lnk_ir_pulses<<length){
       i++;
       digitalWrite(pin, HIGH);

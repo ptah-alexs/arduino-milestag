@@ -1,15 +1,15 @@
-const byte CLONE_COUNT    = 36;
-const int lvl_0           = 600;
-const int lvl_1           = lvl_0<<1;
-const byte irfrequency    = 36;
-const int timeout         = 3200;
-const int irt             = (int) ((500/irfrequency) - 4);
-const byte irpulses       = (int) (lvl_0 / (1000/irfrequency));
+const uint8_t CLONE_COUNT    = 36;
+const int16_t lvl_0           = 600;
+const int16_t lvl_1           = lvl_0<<1;
+const uint8_t irfrequency    = 36;
+const int16_t timeout         = 3200;
+const int16_t irt             = (int) ((500/irfrequency) - 4);
+const uint8_t irpulses       = (int) (lvl_0 / (1000/irfrequency));
 
 // list of pin
-int dhead                 = 3;
-int triggerpin            = 4;
-int irtransmitpin         = 2;
+int16_t dhead                 = 3;
+int16_t triggerpin            = 4;
+int16_t irtransmitpin         = 2;
 
 /*
 0  - последовательный порт. mp3-модуль
@@ -35,49 +35,49 @@ int irtransmitpin         = 2;
  */
 
 // other data
-byte clone_data[CLONE_COUNT]; 
-unsigned int command      = 33536;//instakill
+uint8_t clone_data[CLONE_COUNT]; 
+uint16_t command      = 33536;//instakill
 
 //Global clone data values
-byte cl_team_id         = 0;
-byte cl_muzzle_flash    = 0;
-byte cl_overheat_on     = 0;
-byte cl_hit_led_enabled = 0;
-byte cl_friendly_fire   = 0;
-byte cl_unlimited_clips = 0;
-byte cl_zombie_mod      = 0;
-byte cl_medpack_enabled = 0;
-byte cl_gamebox_reset   = 0;
-byte cl_gamemox_limit   = 0;
-byte cl_ctf_display_on  = 0;
-byte cl_respawn_on      = 0;
-byte cl_tagger_nick_on  = 0;
-byte cl_old_ir_lvl      = 0;
-byte cl_ammo_reset_resp = 0;
-byte cl_game_mode_on    = 1;
+uint8_t cl_team_id         = 0;
+uint8_t cl_muzzle_flash    = 0;
+uint8_t cl_overheat_on     = 0;
+uint8_t cl_hit_led_enabled = 0;
+uint8_t cl_friendly_fire   = 0;
+uint8_t cl_unlimited_clips = 0;
+uint8_t cl_zombie_mod      = 0;
+uint8_t cl_medpack_enabled = 0;
+uint8_t cl_gamebox_reset   = 0;
+uint8_t cl_gamemox_limit   = 0;
+uint8_t cl_ctf_display_on  = 0;
+uint8_t cl_respawn_on      = 0;
+uint8_t cl_tagger_nick_on  = 0;
+uint8_t cl_old_ir_lvl      = 0;
+uint8_t cl_ammo_reset_resp = 0;
+uint8_t cl_game_mode_on    = 1;
 
-byte cl_ammo_box_clips  = 0;
-byte cl_medpack_size    = 0;
-byte cl_hit_led_timeout = 0;
-byte cl_sound_set       = 0;
-byte cl_overheat_limit  = 0;
-byte cl_damage_id       = 0;
-byte cl_clip_size       = 0;
-byte cl_clip_numbers    = 0;
-byte cl_fire_selector   = 0;
-byte cl_burst_size      = 0;
-byte cl_rpm             = 0;
-byte cl_reload_delay    = 0;
-byte cl_ir_power        = 0;
-byte cl_ir_range        = 0;
-byte cl_health_respawn  = 0;
-byte cl_respawn_delay   = 0;
-byte cl_armor           = 0;
-byte cl_hit_delay       = 0;
-byte cl_start_delay     = 0;
-byte cl_death_delay     = 0;
-byte cl_time_limit      = 0;
-byte cl_max_respawns    = 0;
+uint8_t cl_ammo_box_clips  = 0;
+uint8_t cl_medpack_size    = 0;
+uint8_t cl_hit_led_timeout = 0;
+uint8_t cl_sound_set       = 0;
+uint8_t cl_overheat_limit  = 0;
+uint8_t cl_damage_id       = 0;
+uint8_t cl_clip_size       = 0;
+uint8_t cl_clip_numbers    = 0;
+uint8_t cl_fire_selector   = 0;
+uint8_t cl_burst_size      = 0;
+uint8_t cl_rpm             = 0;
+uint8_t cl_reload_delay    = 0;
+uint8_t cl_ir_power        = 0;
+uint8_t cl_ir_range        = 0;
+uint8_t cl_health_respawn  = 0;
+uint8_t cl_respawn_delay   = 0;
+uint8_t cl_armor           = 0;
+uint8_t cl_hit_delay       = 0;
+uint8_t cl_start_delay     = 0;
+uint8_t cl_death_delay     = 0;
+uint8_t cl_time_limit      = 0;
+uint8_t cl_max_respawns    = 0;
 
 void setup(){
     Serial.begin(9600); 
@@ -95,8 +95,8 @@ void loop(){
 }
 
 void triggers(){
-    static byte tr  = 0;
-    static byte ltr = 0;
+    static uint8_t tr  = 0;
+    static uint8_t ltr = 0;
         ltr = tr;
         tr = digitalRead(triggerpin);
         if ( tr != ltr && tr == LOW){
@@ -106,11 +106,11 @@ void triggers(){
         }
 }
 
-void sendcommand(unsigned int comm){
-    byte parity = 0;
+void sendcommand(uint16_t comm){
+    uint8_t parity = 0;
     sendPulse(irtransmitpin,2);
     delayMicroseconds(lvl_0);
-    for (int i = 15; i >= 0; i--){
+    for (int16_t i = 15; i >= 0; i--){
         if (((comm >> i) & B1) == 0){sendPulse(irtransmitpin,0);}
         else {
             sendPulse(irtransmitpin,1);
@@ -118,7 +118,7 @@ void sendcommand(unsigned int comm){
         }
         delayMicroseconds(lvl_0);        
     }
-    for (int i = 7; i >= 0; i--){
+    for (int16_t i = 7; i >= 0; i--){
         if (((0xE8 >> i) & B1) == 0){sendPulse(irtransmitpin,0);}
         else {sendPulse(irtransmitpin,1);}
         delayMicroseconds(lvl_0);        
@@ -132,8 +132,8 @@ void sendcommand(unsigned int comm){
 
 void sendclonedata(){
     sendcommand(0x8701);
-    for (int j = 0; j <= CLONE_COUNT; j++){
-        for (int i = 7; i >= 0; i--){
+    for (int16_t j = 0; j <= CLONE_COUNT; j++){
+        for (int16_t i = 7; i >= 0; i--){
             if (((clone_data[j] >> i) & B1) == 0){sendPulse(irtransmitpin,0);}
             else {sendPulse(irtransmitpin,1);}
             delayMicroseconds(lvl_0);        
@@ -141,8 +141,8 @@ void sendclonedata(){
     }
 }
 
-void sendPulse(int pin, byte length){
-  int i = 0;
+void sendPulse(int16_t pin, uint8_t length){
+  int16_t i = 0;
     while(i < irpulses<<length){
       i++;
       digitalWrite(pin, HIGH);
@@ -152,8 +152,8 @@ void sendPulse(int pin, byte length){
     }
 }
 
-void fill_clone_data(byte game_mode){
-    int checksum = 0;
+void fill_clone_data(uint8_t game_mode){
+    int16_t checksum = 0;
     clone_data[0]  =0x08;//marker
     clone_data[1]  =0xE8;//marker
     clone_data[2]  =0x21;//marker
@@ -211,6 +211,6 @@ void fill_clone_data(byte game_mode){
             break;
     }
     checksum = 0;
-    for (int i = 0; i < CLONE_COUNT - 1; i++){checksum += clone_data[i];}
+    for (int16_t i = 0; i < CLONE_COUNT - 1; i++){checksum += clone_data[i];}
     clone_data[35] = checksum%0x100;
 }

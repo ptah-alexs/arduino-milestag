@@ -404,7 +404,7 @@ void receive_command(){
     static int16_t recieved_pulse   = 0;
     static uint8_t recieved_bit    = 0;
     static uint8_t parity_bit      = 0;
-    static uint8_t temp_parity_bit = 0; 
+    static uint8_t temp_parity_bit = 0;
     static uint8_t size_of_command = 0;
     static uint8_t parity          = 0;
     recieved_pulse = pulseIn(sens_head, LOW,lnk_timeout);
@@ -878,7 +878,7 @@ void dead(){
 
 void align(int16_t st, int16_t x, int16_t y){
     uint8_t offcet  = display.getStrWidth("9");
-    uint8_t offcet1 = 0; 
+    uint8_t offcet1 = 0;
     if (st < 100){offcet1+=offcet;};
     if (st < 10){offcet1+=offcet;};
     display.setPrintPos(x+offcet1,y);
@@ -887,7 +887,7 @@ void align(int16_t st, int16_t x, int16_t y){
 
 void align2(int16_t st, int16_t x, int16_t y){
     uint8_t offcet  = display.getStrWidth("9");
-    uint8_t offcet1 = offcet*3; 
+    uint8_t offcet1 = offcet*3;
     if (st < 100){offcet1 = offcet*2;};
     if (st < 10){offcet1 = offcet;};
     display.setPrintPos(x+((63 - offcet1)/2),y);
